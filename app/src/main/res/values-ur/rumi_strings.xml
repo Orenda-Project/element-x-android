@@ -3,4 +3,18 @@
 <resources>
     <string name="screen_login_subtitle">"آپ کی اسکول ٹیم کے لیے ایک نجی میسنجر۔"</string>
     <string name="screen_notification_settings_sound_element_default">"رومی ڈیفالٹ"</string>
+
+    <!-- rumi-messenger#14: upstream values-ur ships its own "recovery key / identity" wording for
+         these, which beats the unqualified override, so the headline strings are repeated here. -->
+    <string name="screen_identity_confirmation_title">"تصدیق کریں کہ یہ آپ ہیں"</string>
+    <string name="screen_identity_confirmation_subtitle">"تاکہ یہ فون آپ کی پرانی چیٹس کھول سکے۔ ایک طریقہ چنیں۔"</string>
+    <string name="screen_identity_confirmation_use_another_device">"دوسرے فون پر منظور کریں"</string>
+    <string name="screen_identity_use_another_device">"دوسرے فون پر منظور کریں"</string>
+    <string name="screen_identity_confirmation_use_recovery_key">"اپنا بیک اپ کوڈ درج کریں"</string>
+    <string name="screen_recovery_key_confirm_title">"اپنا بیک اپ کوڈ درج کریں"</string>
+    <string name="banner_set_up_recovery_title">"اپنا بیک اپ کوڈ محفوظ کریں"</string>
+    <string name="banner_set_up_recovery_content">"آپ کی چیٹس کا بیک اپ محفوظ ہے۔ نئے فون پر انہیں کھولنے کے لیے بیک اپ کوڈ چاہیے۔ ابھی لیں اور لکھ لیں۔"</string>
+    <string name="banner_set_up_recovery_submit">"بیک اپ کوڈ لیں"</string>
+    <string name="screen_encryption_reset_title">"تصدیق نہیں ہو رہی؟ آپ نئے سرے سے شروع کر سکتے ہیں۔"</string>
+    <string name="screen_encryption_reset_action_continue_reset">"نئے سرے سے شروع کریں"</string>
 </resources>

@@ -2,11 +2,102 @@
 <!--
   Rumi overrides of upstream Element X strings. The app module wins Android resource merging over
   feature libraries, so these replace the upstream copy without touching localazy.xml (keeps
-  upstream syncs conflict-free). Only strings that leak Element/Matrix branding to teachers go here.
+  upstream syncs conflict-free). Only strings that leak Element/Matrix branding or crypto vocabulary
+  to teachers go here.
 -->
 <resources>
     <!-- Login password screen subtitle; upstream says "Matrix is an open network ..." -->
     <string name="screen_login_subtitle">"A private messenger for your school team."</string>
     <!-- Notification settings, default message sound label; upstream says "Element Default" -->
     <string name="screen_notification_settings_sound_element_default">"Rumi Default"</string>
+
+    <!--
+      rumi-messenger#14: plain words for the new-phone / reinstall screens. "Recovery key" becomes
+      "backup code", "confirm your digital identity" becomes "confirm it's you", "reset your digital
+      identity" becomes "start fresh". Same meaning, same warnings, no crypto vocabulary.
+    -->
+    <!-- Sign-in on a new phone (features/ftue + features/verifysession) -->
+    <string name="screen_identity_confirmation_title">"Confirm it’s you"</string>
+    <string name="screen_identity_confirmation_subtitle">"So this phone can open your earlier chats. Pick one."</string>
+    <string name="screen_identity_confirmation_use_another_device">"Approve on my other phone"</string>
+    <string name="screen_identity_use_another_device">"Approve on my other phone"</string>
+    <string name="screen_identity_confirmation_use_recovery_key">"Enter my backup code"</string>
+    <string name="screen_identity_waiting_on_other_device">"Waiting for your other phone or computer…"</string>
+    <string name="screen_identity_confirmed_title">"This phone is confirmed"</string>
+    <string name="screen_identity_confirmed_subtitle">"Your chats are ready on this phone."</string>
+    <string name="screen_session_verification_use_another_device_title">"Open the app on your other phone or computer"</string>
+    <string name="screen_session_verification_use_another_device_subtitle">"Keep the app open there. It will ask you to approve this phone."</string>
+    <string name="screen_identity_confirmation_cannot_confirm">"Can’t confirm?"</string>
+    <string name="screen_identity_confirmation_create_new_recovery_key">"Make a new backup code"</string>
+    <string name="screen_session_verification_enter_recovery_key">"Enter backup code"</string>
+    <string name="screen_session_verification_unavailable_subtitle">"Use your other phone or computer, or your backup code."</string>
+
+    <!-- Entering the code (features/securebackup) -->
+    <string name="common_recovery_key">"Backup code"</string>
+    <string name="screen_recovery_key_confirm_title">"Enter your backup code"</string>
+    <string name="screen_recovery_key_confirm_description">"Make sure nobody can see this screen."</string>
+    <string name="screen_recovery_key_confirm_key_description">"An older security phrase works too."</string>
+    <string name="screen_recovery_key_confirm_lost_recovery_key">"Lost your backup code?"</string>
+    <string name="screen_recovery_key_confirm_error_title">"That backup code doesn’t match"</string>
+    <string name="screen_recovery_key_confirm_error_content">"Check the code and try again."</string>
+    <string name="screen_recovery_key_confirm_success">"Backup code accepted"</string>
+    <string name="screen_recovery_key_confirm_create_new_recovery_key">"Make a new backup code"</string>
+
+    <!-- Getting the code (home banner + Settings, Encryption) -->
+    <string name="screen_chat_backup_key_backup_title">"Chat backup"</string>
+    <string name="screen_chat_backup_key_backup_description">"Keeps a locked copy of your chats so a new phone can open them. %1$s."</string>
+    <string name="screen_chat_backup_key_storage_toggle_title">"Back up my chats"</string>
+    <string name="banner_set_up_recovery_title">"Save your backup code"</string>
+    <string name="banner_set_up_recovery_content">"Your chats are backed up and locked. A backup code opens them on a new phone. Get it now and write it down."</string>
+    <string name="banner_set_up_recovery_submit">"Get backup code"</string>
+    <string name="confirm_recovery_key_banner_title">"Enter your backup code"</string>
+    <string name="confirm_recovery_key_banner_message">"This phone needs your backup code to keep your chat history."</string>
+    <string name="confirm_recovery_key_banner_primary_button_title">"Enter backup code"</string>
+    <string name="confirm_recovery_key_banner_secondary_button_title">"Lost your backup code?"</string>
+    <string name="screen_chat_backup_recovery_action_setup">"Get backup code"</string>
+    <string name="screen_chat_backup_recovery_action_confirm">"Enter backup code"</string>
+    <string name="screen_chat_backup_recovery_action_change">"Change backup code"</string>
+    <string name="screen_chat_backup_recovery_action_setup_description">"Your chats are backed up and locked. A backup code opens them on a new phone."</string>
+    <string name="screen_chat_backup_recovery_action_change_description">"Your chats are backed up and locked. A backup code opens them on a new phone."</string>
+    <string name="screen_recovery_key_setup_title">"Get your backup code"</string>
+    <string name="screen_recovery_key_setup_description">"The backup code opens your chats on a new phone. You can make a new one later in Settings."</string>
+    <string name="screen_recovery_key_setup_generate_key">"Make my backup code"</string>
+    <string name="screen_recovery_key_setup_generate_key_description">"Don’t share it with anyone."</string>
+    <string name="screen_recovery_key_setup_confirmation_title">"Have you written down your backup code?"</string>
+    <string name="screen_recovery_key_setup_confirmation_description">"You won’t see this code again after this step."</string>
+    <string name="screen_recovery_key_setup_success">"Backup code saved"</string>
+    <string name="screen_recovery_key_save_title">"Write down your backup code"</string>
+    <string name="screen_recovery_key_save_description">"Write it on paper, or keep it somewhere private that isn’t this phone. Your admin can’t get it back for you."</string>
+    <string name="screen_recovery_key_save_action">"Save backup code"</string>
+    <string name="screen_recovery_key_save_key_description">"Tap to copy the code"</string>
+    <string name="screen_recovery_key_copied_to_clipboard">"Code copied"</string>
+    <string name="screen_recovery_key_change_title">"Change your backup code?"</string>
+    <string name="screen_recovery_key_change_description">"Make a new code if you’ve lost the old one. The old code stops working."</string>
+    <string name="screen_recovery_key_change_generate_key">"Make a new backup code"</string>
+    <string name="screen_recovery_key_change_generate_key_description">"Don’t share it with anyone."</string>
+    <string name="screen_recovery_key_change_success">"Backup code changed"</string>
+
+    <!-- Starting fresh (honest warning, no alarm; upstream: "reset your digital identity") -->
+    <string name="screen_encryption_reset_title">"Can’t confirm? You can start fresh."</string>
+    <string name="screen_encryption_reset_bullet_1">"Your account, contacts and chat list stay."</string>
+    <string name="screen_encryption_reset_bullet_2">"Messages from before now won’t open on this phone."</string>
+    <string name="screen_encryption_reset_bullet_3">"Your other phones and computers will need to confirm again."</string>
+    <string name="screen_encryption_reset_footer">"Only start fresh if your other phone or computer is gone and you’ve lost your backup code."</string>
+    <string name="screen_encryption_reset_action_continue_reset">"Start fresh"</string>
+    <string name="screen_reset_encryption_confirmation_alert_title">"Start fresh? Old messages won’t open."</string>
+    <string name="screen_reset_encryption_confirmation_alert_subtitle">"This can’t be undone."</string>
+    <string name="screen_reset_encryption_confirmation_alert_action">"Yes, start fresh"</string>
+    <string name="screen_reset_encryption_password_subtitle">"Confirm that you want to start fresh."</string>
+
+    <!-- Signing out of the only device (features/logout) -->
+    <string name="screen_signout_save_recovery_key_title">"Have your backup code ready before you sign out"</string>
+    <string name="screen_signout_save_recovery_key_subtitle">"This is your only device. After you sign out, you’ll need your backup code to open your chats next time."</string>
+    <string name="screen_signout_recovery_disabled_subtitle">"This is your only device. After you sign out, you’ll need your backup code to open your chats next time."</string>
+    <string name="screen_signout_key_backup_disabled_subtitle">"This is your only device. After you sign out, you’ll need your backup code to open your chats next time."</string>
+
+    <!-- A colleague reinstalled or got a new phone (libraries/ui-strings) -->
+    <string name="crypto_identity_change_profile_pin_violation">"%1$s signed in again on a new phone or reinstalled the app."</string>
+    <string name="crypto_identity_change_pin_violation">"%1$s signed in again on a new phone or reinstalled the app. %2$s"</string>
+    <string name="crypto_identity_change_pin_violation_new">"%1$s (%2$s) signed in again on a new phone or reinstalled the app. %3$s"</string>
+    <string name="crypto_identity_change_verification_violation_new">"%1$s (%2$s) signed in again on a new phone or reinstalled the app. %3$s"</string>
 </resources>

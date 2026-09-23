@@ -172,7 +172,12 @@ class RustMatrixClientFactory(
                 strategy = if (featureFlagService.isFeatureEnabled(FeatureFlags.OnlySignedDeviceIsolationMode)) {
                     CollectStrategy.IDENTITY_BASED_STRATEGY
                 } else {
-                    CollectStrategy.ERROR_ON_VERIFIED_USER_PROBLEM
+                    // Rumi: upstream uses ERROR_ON_VERIFIED_USER_PROBLEM, which refuses to send at all while the
+                    // sender (or any verified contact) has a device they never confirmed. After a reinstall or a new
+                    // phone, the teacher's own old sign-in is exactly such a device, so every message failed until a
+                    // hidden "Send message anyway" (rumi-messenger#14). ALL_DEVICES never blocks a send; the tradeoff
+                    // is that unconfirmed devices on the account also get the keys (see rumi-messenger DECISIONS.tsv).
+                    CollectStrategy.ALL_DEVICES
                 }
             )
             .decryptionSettings(
