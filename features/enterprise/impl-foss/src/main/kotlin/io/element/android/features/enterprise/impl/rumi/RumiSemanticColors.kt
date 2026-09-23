@@ -68,6 +68,18 @@ private const val RUMI_CORAL_HOVERED = 0xFFEE5826
 private const val RUMI_CORAL_PRESSED = 0xFFE34712
 private const val RUMI_CORAL_SUBTLE = 0xFFFBDBD0
 
+// Gradients. Compound's "subtle" gradient is what Modifier.gradientBackground() paints behind
+// screen headers (the chat list's top bar), and stock it is Element's signature green. Held
+// next to stock, that green header alone identifies the app as Element, so it must go.
+// Light: white into the faintest navy tint, so the header reads as paper, not a colour.
+// Dark: the canvas into a deep navy, the same "lift" logic as the dark primary above.
+// "Action" stops feed SuperButton and GradientFloatingActionButton; navy shades keep any
+// gradient button in the brand and off Element green.
+private val RUMI_GRADIENT_SUBTLE_LIGHT = listOf(0xFFFFFFFF, 0xFFF7F8FC, 0xFFEEF1F8, 0xFFE8ECF7, 0xFFF3F5FA, 0xFFFFFFFF)
+private val RUMI_GRADIENT_SUBTLE_DARK  = listOf(0xFF0B1226, 0xFF0E1A3C, 0xFF12224E, 0xFF162A60, 0xFF101E44, 0xFF0B1226)
+private val RUMI_GRADIENT_ACTION_LIGHT = listOf(0xFF0E2058, 0xFF16307C, 0xFF1F3F9E, 0xFF2B52C4)
+private val RUMI_GRADIENT_ACTION_DARK  = listOf(0xFF355FDF, 0xFF4F74E3, 0xFF6989E7, 0xFF86A0EB)
+
 val rumiSemanticColors: SemanticColorsLightDark = SemanticColorsLightDark(
     light = compoundColorsLight.copy(
         bgActionPrimaryRest = Color(RUMI_NAVY_LIGHT_REST),
@@ -82,6 +94,16 @@ val rumiSemanticColors: SemanticColorsLightDark = SemanticColorsLightDark(
         borderAccentPrimary = Color(RUMI_CORAL_REST),
         borderAccentSubtle = Color(RUMI_CORAL_HOVERED),
         textActionAccent = Color(RUMI_CORAL_PRESSED),
+        gradientSubtleStop1 = Color(RUMI_GRADIENT_SUBTLE_LIGHT[0]),
+        gradientSubtleStop2 = Color(RUMI_GRADIENT_SUBTLE_LIGHT[1]),
+        gradientSubtleStop3 = Color(RUMI_GRADIENT_SUBTLE_LIGHT[2]),
+        gradientSubtleStop4 = Color(RUMI_GRADIENT_SUBTLE_LIGHT[3]),
+        gradientSubtleStop5 = Color(RUMI_GRADIENT_SUBTLE_LIGHT[4]),
+        gradientSubtleStop6 = Color(RUMI_GRADIENT_SUBTLE_LIGHT[5]),
+        gradientActionStop1 = Color(RUMI_GRADIENT_ACTION_LIGHT[0]),
+        gradientActionStop2 = Color(RUMI_GRADIENT_ACTION_LIGHT[1]),
+        gradientActionStop3 = Color(RUMI_GRADIENT_ACTION_LIGHT[2]),
+        gradientActionStop4 = Color(RUMI_GRADIENT_ACTION_LIGHT[3]),
     ),
     dark = compoundColorsDark.copy(
         bgActionPrimaryRest = Color(RUMI_NAVY_DARK_REST),
@@ -96,5 +118,15 @@ val rumiSemanticColors: SemanticColorsLightDark = SemanticColorsLightDark(
         borderAccentPrimary = Color(RUMI_CORAL_REST),
         borderAccentSubtle = Color(RUMI_CORAL_HOVERED),
         textActionAccent = Color(RUMI_CORAL_PRESSED),
+        gradientSubtleStop1 = Color(RUMI_GRADIENT_SUBTLE_DARK[0]),
+        gradientSubtleStop2 = Color(RUMI_GRADIENT_SUBTLE_DARK[1]),
+        gradientSubtleStop3 = Color(RUMI_GRADIENT_SUBTLE_DARK[2]),
+        gradientSubtleStop4 = Color(RUMI_GRADIENT_SUBTLE_DARK[3]),
+        gradientSubtleStop5 = Color(RUMI_GRADIENT_SUBTLE_DARK[4]),
+        gradientSubtleStop6 = Color(RUMI_GRADIENT_SUBTLE_DARK[5]),
+        gradientActionStop1 = Color(RUMI_GRADIENT_ACTION_DARK[0]),
+        gradientActionStop2 = Color(RUMI_GRADIENT_ACTION_DARK[1]),
+        gradientActionStop3 = Color(RUMI_GRADIENT_ACTION_DARK[2]),
+        gradientActionStop4 = Color(RUMI_GRADIENT_ACTION_DARK[3]),
     ),
 )
