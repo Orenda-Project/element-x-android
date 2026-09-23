@@ -9,8 +9,12 @@
 package config
 
 object BuildTimeConfig {
-    const val APPLICATION_ID = "io.element.android.x"
-    const val APPLICATION_NAME = "Element X"
+    // Rumi branding: Rumi Messenger's Android app identity (rumi-brand fork). "Rumi" reads better
+    // as a home-screen label than "Rumi Messenger" -- it matches the WhatsApp display name and
+    // hellorumi.ai product naming (see rumi-brand skill, reference/logo-and-assets.md section 5), and stays
+    // short enough not to truncate under the launcher icon on narrow grids.
+    const val APPLICATION_ID = "ai.hellorumi.messenger"
+    const val APPLICATION_NAME = "Rumi"
     val METADATA_HOST_REVERSED: String? = null
     val OAUTH_CLIENT_URL_PATH: String? = "apps/android"
     val URL_WEBSITE: String? = null

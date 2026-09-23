@@ -13,6 +13,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import io.element.android.compound.colors.SemanticColorsLightDark
 import io.element.android.features.enterprise.api.BugReportUrl
+import io.element.android.features.enterprise.impl.rumi.rumiSemanticColors
 import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.libraries.androidutils.json.JsonProvider
 import io.element.android.libraries.core.extensions.mapCatchingExceptions
@@ -34,7 +35,19 @@ class DefaultEnterpriseService(
 ) : EnterpriseService {
     override suspend fun isEnterpriseUser(sessionId: SessionId) = false
     override suspend fun tweakMasUrl(url: String, urlContentFetcher: ClientUrlContentFetcher) = url
-    override fun accountProviderAllowList(): List<AccountProvider> = emptyList()
+
+    // Rumi branding: pre-fill Rumi Messenger's homeserver as the default account provider a
+    // teacher sees on first launch. This does not restrict sign-in to it (canConnectToAnyAccountProvider
+    // below stays true), it only seeds AccountProviderDataSource's default before any history exists
+    // (see AccountProviderDataSource.defaultAccountProvider()). A teacher can still type any other
+    // server on the "Other" homeserver screen.
+    //
+    // TODO(https://github.com/Orenda-Project/rumi-messenger/issues/6): there is no public production
+    // Rumi Messenger domain yet. rumi.example is a deliberately non-resolving placeholder, not a real
+    // deployment -- replace it once that issue ships a real homeserver.
+    override fun accountProviderAllowList(): List<AccountProvider> = listOf(
+        AccountProvider.Generic(serverName = "rumi.example"),
+    )
     override fun canConnectToAnyAccountProvider(): Boolean = true
     override suspend fun isAllowedToConnectToAccountProvider(accountProvider: AccountProvider) = true
     override suspend fun isElementProEnforced(serverName: String): Boolean {
@@ -60,8 +73,11 @@ class DefaultEnterpriseService(
         return flowOf(null)
     }
 
+    // Rumi branding: navy/coral applied to the Compound design system's "action primary" and
+    // "accent" token groups (see rumi.rumiSemanticColors doc comment for exactly which tokens,
+    // and which ones this doesn't reach).
     override fun semanticColorsFlow(sessionId: SessionId?): Flow<SemanticColorsLightDark> {
-        return flowOf(SemanticColorsLightDark.default)
+        return flowOf(rumiSemanticColors)
     }
 
     override fun firebasePushGateway(): String? = null
