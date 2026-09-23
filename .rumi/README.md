@@ -18,6 +18,9 @@ Tracked plainly, so the diff against `element-hq/element-x-android` stays review
 
 - App name, icon, and default homeserver, so a teacher signs in without typing a server address.
 - Rumi's colours where the app's own theming reaches them.
+- The onboarding hero: Element X looks up a drawable named `onboarding_logo` and, when it exists,
+  draws it in place of its own logo, headline, subtitle and gradient. Ours carries the Rumi mark and
+  the line "You're Not Teaching Alone", in light and night variants, at five densities. Zero Kotlin.
 - Nothing else. Matrix protocol handling, encryption, and the rest of the app are upstream's, unmodified.
 
 ## Licence
