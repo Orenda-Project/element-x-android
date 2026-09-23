@@ -1,0 +1,101 @@
+name: Rumi release (signed F-Droid APKs)
+
+# Rumi fork only. Same build steps as release.yml's fdroid job, plus signing with the
+# Rumi release key and a GitHub Release so teachers can download the APK from a public link.
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions: {}
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx8g -XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError -XX:+UseG1GC -Dkotlin.daemon.jvm.options=-Xmx4g
+  CI_GRADLE_ARG_PROPERTIES: --stacktrace --no-daemon -Dsonar.gradle.skipCompile=true --no-configuration-cache
+
+jobs:
+  release:
+    name: Build, sign and publish Rumi APKs
+    if: github.repository == 'Orenda-Project/element-x-android'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ format('rumi-release-{0}', github.ref) }}
+      cancel-in-progress: true
+    steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be
+        with:
+          tool-cache: true
+          android: false
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: true
+          swap-storage: false
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Use JDK 21
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      - name: Configure gradle
+        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
+
+      - name: Decode release keystore
+        env:
+          RUMI_KEYSTORE_B64: ${{ secrets.RUMI_KEYSTORE_B64 }}
+        run: echo "$RUMI_KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/rumi-release.keystore"
+
+      - name: Create signed APKs
+        env:
+          RUMI_KEYSTORE_FILE: ${{ runner.temp }}/rumi-release.keystore
+          RUMI_KEYSTORE_PASSWORD: ${{ secrets.RUMI_KEYSTORE_PASSWORD }}
+          RUMI_KEY_ALIAS: ${{ secrets.RUMI_KEY_ALIAS }}
+          RUMI_KEY_PASSWORD: ${{ secrets.RUMI_KEY_PASSWORD }}
+        run: ./gradlew assembleFdroidRelease $CI_GRADLE_ARG_PROPERTIES
+
+      - name: Verify signatures and collect assets
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          BT="$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)"
+          mkdir -p dist
+          for abi in universal arm64-v8a x86_64; do
+            src="app/build/outputs/apk/fdroid/release/app-fdroid-$abi-release.apk"
+            "$BT/apksigner" verify --print-certs "$src" | tee -a dist/certs.txt
+            cp "$src" "dist/rumi-$TAG-$abi.apk"
+          done
+          (cd dist && sha256sum *.apk > SHA256SUMS && cat SHA256SUMS)
+          CERT=$(grep -m1 'certificate SHA-256 digest' dist/certs.txt | awk '{print $NF}')
+          cat > dist/NOTES.md <<EOF
+          Rumi Messenger for Android, built from \`${GITHUB_SHA}\`.
+
+          **Which file?** Most phones: \`rumi-$TAG-arm64-v8a.apk\`. Not sure: \`rumi-$TAG-universal.apk\` (bigger, works everywhere). \`x86_64\` is for emulators.
+
+          **Install:** open the APK on the phone, allow "Install unknown apps" for your browser or file manager when Android asks.
+
+          **Sign in:** on the first screen choose to change the server, then
+          Server: type http(s)://your-school-server
+
+          Signing certificate SHA-256: \`$CERT\`
+          Check a download with \`sha256sum -c SHA256SUMS\`.
+          EOF
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/*.apk dist/SHA256SUMS --clobber -R "$GITHUB_REPOSITORY"
+            gh release edit "$TAG" --notes-file dist/NOTES.md -R "$GITHUB_REPOSITORY"
+          else
+            gh release create "$TAG" dist/*.apk dist/SHA256SUMS --title "Rumi $TAG" --notes-file dist/NOTES.md --latest --verify-tag -R "$GITHUB_REPOSITORY"
+          fi

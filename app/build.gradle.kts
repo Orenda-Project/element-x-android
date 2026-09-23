@@ -96,6 +96,15 @@ android {
             storePassword = System.getenv("ELEMENT_ANDROID_NIGHTLY_STOREPASSWORD")
                 ?: project.property("signing.element.nightly.storePassword") as? String?
         }
+        // Rumi release key: CI decodes the RUMI_KEYSTORE_B64 secret to a file and points RUMI_KEYSTORE_FILE at it.
+        if (System.getenv("RUMI_KEYSTORE_FILE") != null) {
+            register("rumi") {
+                keyAlias = System.getenv("RUMI_KEY_ALIAS")
+                keyPassword = System.getenv("RUMI_KEY_PASSWORD")
+                storeFile = file(System.getenv("RUMI_KEYSTORE_FILE"))
+                storePassword = System.getenv("RUMI_KEYSTORE_PASSWORD")
+            }
+        }
     }
 
     val baseAppName = BuildTimeConfig.APPLICATION_NAME
@@ -122,7 +131,7 @@ android {
                 "login_redirect_scheme",
                 oAuthRedirectSchemeBase,
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.findByName("rumi") ?: signingConfigs.getByName("debug")
 
             optimization {
                 enable = true
