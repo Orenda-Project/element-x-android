@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  en-US counterpart of values/rumi_strings.xml. Upstream ships a values-en-rUS translation of
+  screen_login_subtitle ("decentralized" spelling) in features/login, and a locale-qualified
+  resource beats the app module's unqualified one, so on an en-US phone (most Android defaults)
+  the Rumi override in values/ never showed. Seen on device in android-run4 (04-login-form.png).
+-->
+<resources>
+    <string name="screen_login_subtitle">"A private messenger for your school team."</string>
+</resources>

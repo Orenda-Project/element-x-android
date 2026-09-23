@@ -144,7 +144,7 @@ private fun AnalyticsOptInContent() {
                     iconVector = CompoundIcons.CheckCircle(),
                 ),
             ),
-            iconTint = ElementTheme.colors.iconSuccessPrimary,
+            iconTint = ElementTheme.colors.iconAccentPrimary,
         )
     }
 }

@@ -2,4 +2,5 @@
 <!-- Urdu counterpart of values/rumi_strings.xml; upstream values-ur also mentions Matrix. -->
 <resources>
     <string name="screen_login_subtitle">"آپ کی اسکول ٹیم کے لیے ایک نجی میسنجر۔"</string>
+    <string name="screen_notification_settings_sound_element_default">"رومی ڈیفالٹ"</string>
 </resources>

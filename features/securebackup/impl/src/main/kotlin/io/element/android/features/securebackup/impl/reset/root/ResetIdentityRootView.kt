@@ -89,7 +89,7 @@ private fun Content() {
                             modifier = Modifier.size(20.dp),
                             imageVector = CompoundIcons.Check(),
                             contentDescription = null,
-                            tint = ElementTheme.colors.iconSuccessPrimary,
+                            tint = ElementTheme.colors.iconAccentPrimary,
                         )
                     },
                 ),

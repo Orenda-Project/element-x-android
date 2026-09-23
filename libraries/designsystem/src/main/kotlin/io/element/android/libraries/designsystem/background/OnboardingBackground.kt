@@ -40,6 +40,12 @@ fun OnboardingBackground() {
             .background(ElementTheme.colors.bgCanvasDefault)
     ) {
         val isLightTheme = ElementTheme.isLightTheme
+        // Rumi fork: upstream hardcodes Element's teal (#0DBDA8) into blue (#0D5CBD) here, which
+        // left the notification/analytics opt-in and classic-login screens reading as Element
+        // (android-run3 04/05). Read the theme's accent (Rumi coral) and primary action (Rumi
+        // navy, or its dark-mode lift) instead, so the bloom follows the Compound tokens.
+        val startColor = ElementTheme.colors.bgAccentRest
+        val endColor = ElementTheme.colors.bgActionPrimaryRest.let { if (isLightTheme) it.copy(alpha = 0.79f) else it }
         Canvas(
             modifier = Modifier
                 .fillMaxWidth()
@@ -51,8 +57,8 @@ fun OnboardingBackground() {
                     from = Offset(0f, size.height / 2f),
                     to = Offset(size.width, size.height / 2f),
                     colors = listOf(
-                        Color(0xFF0DBDA8),
-                        if (isLightTheme) Color(0xC90D5CBD) else Color(0xFF0D5CBD),
+                        startColor,
+                        endColor,
                     )
                 )
             )

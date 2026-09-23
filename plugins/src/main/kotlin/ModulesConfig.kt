@@ -16,7 +16,14 @@ object ModulesConfig {
         includeUnifiedPush = BuildTimeConfig.PUSH_CONFIG_INCLUDE_UNIFIED_PUSH,
     )
 
-    val analyticsConfig: AnalyticsConfig = if (isEnterpriseBuild) {
+    // Rumi fork: gate analytics on real keys for EVERY build, not only enterprise ones. Upstream's
+    // non-enterprise branch always bundles Posthog + Sentry because Element's own endpoints are
+    // resolved at runtime (PosthogEndpointConfigProvider.isElement()), but this fork's
+    // applicationId is not Element's, so those endpoints resolve to null and nothing is ever sent.
+    // Bundling them anyway made the FTUE ask teachers to consent to analytics that do not exist
+    // (android-run3 05-analytics-optin.png). With no keys, the noop AnalyticsService reports
+    // consent as already asked, so the opt-in screen and the Settings > Analytics row both vanish.
+    val analyticsConfig: AnalyticsConfig = run {
         // Is Posthog configuration available?
         val withPosthog = BuildTimeConfig.SERVICES_POSTHOG_APIKEY.isNullOrEmpty().not() &&
             BuildTimeConfig.SERVICES_POSTHOG_HOST.isNullOrEmpty().not()
@@ -32,11 +39,5 @@ object ModulesConfig {
             println("Analytics disabled")
             AnalyticsConfig.Disabled
         }
-    } else {
-        println("Analytics enabled with Posthog and Sentry")
-        AnalyticsConfig.Enabled(
-            withPosthog = true,
-            withSentry = true,
-        )
     }
 }

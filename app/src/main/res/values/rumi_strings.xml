@@ -7,4 +7,6 @@
 <resources>
     <!-- Login password screen subtitle; upstream says "Matrix is an open network ..." -->
     <string name="screen_login_subtitle">"A private messenger for your school team."</string>
+    <!-- Notification settings, default message sound label; upstream says "Element Default" -->
+    <string name="screen_notification_settings_sound_element_default">"Rumi Default"</string>
 </resources>
