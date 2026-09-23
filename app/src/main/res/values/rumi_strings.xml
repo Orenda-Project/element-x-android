@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Rumi overrides of upstream Element X strings. The app module wins Android resource merging over
+  feature libraries, so these replace the upstream copy without touching localazy.xml (keeps
+  upstream syncs conflict-free). Only strings that leak Element/Matrix branding to teachers go here.
+-->
+<resources>
+    <!-- Login password screen subtitle; upstream says "Matrix is an open network ..." -->
+    <string name="screen_login_subtitle">"A private messenger for your school team."</string>
+</resources>

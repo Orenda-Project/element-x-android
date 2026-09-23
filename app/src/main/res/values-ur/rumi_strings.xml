@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Urdu counterpart of values/rumi_strings.xml; upstream values-ur also mentions Matrix. -->
+<resources>
+    <string name="screen_login_subtitle">"آپ کی اسکول ٹیم کے لیے ایک نجی میسنجر۔"</string>
+</resources>
