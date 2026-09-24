@@ -44,8 +44,13 @@ android {
     defaultConfig {
         applicationId = BuildTimeConfig.APPLICATION_ID
         targetSdk = Versions.TARGET_SDK
-        versionCode = Versions.VERSION_CODE
-        versionName = Versions.VERSION_NAME
+        // Rumi: CI passes the release tag and run number so every published build is identifiable
+        // and always upgrades the previous one. 30_000_000 keeps codes above upstream's CalVer ones
+        // (x10 per ABI stays under the Play Store max). Local builds keep upstream values.
+        val rumiBuildNumber = System.getenv("RUMI_BUILD_NUMBER")?.toIntOrNull()
+        val rumiVersionSuffix = System.getenv("RUMI_VERSION_SUFFIX")?.takeIf { it.isNotBlank() }
+        versionCode = rumiBuildNumber?.let { 30_000_000 + it } ?: Versions.VERSION_CODE
+        versionName = Versions.VERSION_NAME + (rumiVersionSuffix?.let { "-$it" } ?: "")
 
         // Keep abiFilter for the universalApk
         ndk {

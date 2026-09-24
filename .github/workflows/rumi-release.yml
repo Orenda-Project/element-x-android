@@ -59,7 +59,11 @@ jobs:
           RUMI_KEYSTORE_PASSWORD: ${{ secrets.RUMI_KEYSTORE_PASSWORD }}
           RUMI_KEY_ALIAS: ${{ secrets.RUMI_KEY_ALIAS }}
           RUMI_KEY_PASSWORD: ${{ secrets.RUMI_KEY_PASSWORD }}
-        run: ./gradlew assembleFdroidRelease $CI_GRADLE_ARG_PROPERTIES
+          RUMI_BUILD_NUMBER: ${{ github.run_number }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          export RUMI_VERSION_SUFFIX="${TAG#v}"
+          ./gradlew assembleFdroidRelease $CI_GRADLE_ARG_PROPERTIES
 
       - name: Verify signatures and collect assets
         env:
