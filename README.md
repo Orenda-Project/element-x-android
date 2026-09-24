@@ -1,3 +1,23 @@
+# Rumi Messenger for Android (Orenda fork of Element X)
+
+This is the Android app for [Rumi Messenger](https://github.com/Orenda-Project/rumi-messenger): Element X
+re-branded for school teams, with Rumi one tap away. Branch **`rumi-brand`** is ours; `develop` tracks upstream.
+
+- **Download:** [Releases](https://github.com/Orenda-Project/element-x-android/releases/latest) (signed F-Droid
+  flavour, built by `.github/workflows/rumi-release.yml` on every `v*` tag).
+- **What we changed:** `git log upstream/develop..rumi-brand` -- branding through Element's own seams
+  (`EnterpriseService`, `onboarding_logo`, Compound tokens), string overrides in `app/src/main/res/values*/rumi_strings.xml`,
+  analytics off unless keys are set, sends never blocked by a teacher's own unconfirmed device
+  (`RustMatrixClientFactory`). No UI files forked.
+- **Build:** JDK 21, `./gradlew :app:assembleFdroidDebug`; app id `ai.hellorumi.messenger`.
+- **Release:** tag `vX.Y.Z-rumi` on `rumi-brand` and push the tag; CI signs with the `RUMI_KEYSTORE_*` secrets.
+- **Docs, server, issues:** everything else lives in [rumi-messenger](https://github.com/Orenda-Project/rumi-messenger)
+  (teacher guide, admin guide, decisions log). File app issues there too.
+- **Upstream:** [element-hq/element-x-android](https://github.com/element-hq/element-x-android), AGPL-3.0; the
+  weekly upstream-release alert in rumi-messenger tracks how far this branch has drifted.
+
+---
+
 [![Latest build](https://github.com/element-hq/element-x-android/actions/workflows/build.yml/badge.svg?query=branch%3Adevelop)](https://github.com/element-hq/element-x-android/actions/workflows/build.yml?query=branch%3Adevelop)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=element-x-android&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=element-x-android)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=element-x-android&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=element-x-android)
