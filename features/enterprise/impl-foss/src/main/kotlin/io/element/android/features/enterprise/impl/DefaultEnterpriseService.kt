@@ -50,22 +50,12 @@ class DefaultEnterpriseService(
     )
     override fun canConnectToAnyAccountProvider(): Boolean = true
     override suspend fun isAllowedToConnectToAccountProvider(accountProvider: AccountProvider) = true
-    override suspend fun isElementProEnforced(serverName: String): Boolean {
-        val temporaryMatrixClient = temporaryMatrixClientFactory.create(serverName).getOrElse { return false }
-        return temporaryMatrixClient.use { client ->
-            val baseUrl = serverName.ensureProtocol().removeSuffix("/")
-            // We'll always perform a network request here since we're not interested in any cached value.
-            client.getUrl("$baseUrl/.well-known/element/element.json")
-                .mapCatchingExceptions { response ->
-                    val remoteConfig = jsonProvider().decodeFromString<MinimalEnterpriseConfig>(String(response))
-                    remoteConfig.enforceElementPro ?: false
-                }
-                .onFailure {
-                    Timber.e(it, "Failed to fetch enterprise config for checking if Element Pro is enforced for $serverName")
-                }
-                .getOrElse { false }
-        }
-    }
+    // Rumi: no Rumi school server enforces Element Pro, so skip the probe. Upstream's probe builds a
+    // temporary client with `serverName(host:port)`, which drops an explicit http:// and forces
+    // https://host:port/.well-known/matrix/client. Against a plain-http server whose port never
+    // answers a TLS hello, each of the 3 attempts waits out the 30s request timeout: the ~90-100s
+    // spinner after "Continue" on sign-in (QA critic 2026-09-24, row 5).
+    override suspend fun isElementProEnforced(serverName: String): Boolean = false
 
     override suspend fun overrideBrandColor(sessionId: SessionId?, brandColor: String?) = Unit
 

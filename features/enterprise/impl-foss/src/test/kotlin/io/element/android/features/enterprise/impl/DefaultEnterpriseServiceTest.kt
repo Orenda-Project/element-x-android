@@ -114,22 +114,14 @@ class DefaultEnterpriseServiceTest {
     }
 
     @Test
-    fun `isElementProEnforced checks using a temporary client`() = runTest {
-        val closeLambda = lambdaRecorder<Unit> {}
+    fun `isElementProEnforced is false without any network probe (Rumi)`() = runTest {
         val getUrlLambda = lambdaRecorder<String, Result<ByteArray>> {
             Result.success("""{"enforce_element_pro": true}""".toByteArray())
         }
-        val client = FakeTemporaryMatrixClient(
-            getUrlResult = getUrlLambda,
-            closeLambda = closeLambda,
-        )
+        val client = FakeTemporaryMatrixClient(getUrlResult = getUrlLambda)
         val defaultEnterpriseService = createDefaultEnterpriseService(client = client)
-        assertThat(defaultEnterpriseService.isElementProEnforced(A_HOMESERVER_URL)).isTrue()
-
-        // Verify that the temporary client was used to fetch the URL and then closed
-        val expectedUrl = "${A_HOMESERVER_URL.ensureProtocol()}/.well-known/element/element.json"
-        getUrlLambda.assertions().isCalledOnce().with(value(expectedUrl))
-        closeLambda.assertions().isCalledOnce()
+        assertThat(defaultEnterpriseService.isElementProEnforced(A_HOMESERVER_URL)).isFalse()
+        getUrlLambda.assertions().isNeverCalled()
     }
 
     private fun createDefaultEnterpriseService(
