@@ -1,22 +1,84 @@
-# Rumi Messenger for Android (Orenda fork of Element X)
+<p align="center"><img src="docs/rumi/screenshots/01-welcome.png" width="220" alt="Rumi Messenger welcome screen"></p>
 
-This is the Android app for [Rumi Messenger](https://github.com/Orenda-Project/rumi-messenger): Element X
-re-branded for school teams, with Rumi one tap away. Branch **`rumi-brand`** is ours; `develop` tracks upstream.
+# Rumi Messenger for Android
 
-- **Download:** [Releases](https://github.com/Orenda-Project/element-x-android/releases/latest) (signed F-Droid
-  flavour, built by `.github/workflows/rumi-release.yml` on every `v*` tag).
-- **What we changed:** `git log upstream/develop..rumi-brand` -- branding through Element's own seams
-  (`EnterpriseService`, `onboarding_logo`, Compound tokens), string overrides in `app/src/main/res/values*/rumi_strings.xml`,
-  analytics off unless keys are set, sends never blocked by a teacher's own unconfirmed device
-  (`RustMatrixClientFactory`). No UI files forked.
-- **Build:** JDK 21, `./gradlew :app:assembleFdroidDebug`; app id `ai.hellorumi.messenger`.
-- **Release:** tag `vX.Y.Z-rumi` on `rumi-brand` and push the tag; CI signs with the `RUMI_KEYSTORE_*` secrets.
-- **Docs, server, issues:** everything else lives in [rumi-messenger](https://github.com/Orenda-Project/rumi-messenger)
-  (teacher guide, admin guide, decisions log). File app issues there too.
-- **Upstream:** [element-hq/element-x-android](https://github.com/element-hq/element-x-android), AGPL-3.0; the
-  weekly upstream-release alert in rumi-messenger tracks how far this branch has drifted.
+**A private, end-to-end encrypted messenger for school teams, with Rumi, the teaching companion,
+one tap away.** Teachers chat and call each other the way they do on WhatsApp, and ask Rumi for
+lesson ideas, quizzes and coaching in English or Urdu, on a server the school controls.
+
+This is Orenda's fork of [Element X Android](https://github.com/element-hq/element-x-android),
+re-branded and tuned for schools. Branch **`rumi-brand`** is ours; `develop` tracks upstream.
+The server, the docs and the issue tracker live in
+[**Orenda-Project/rumi-messenger**](https://github.com/Orenda-Project/rumi-messenger).
+
+## Download
+
+**[Latest release](https://github.com/Orenda-Project/element-x-android/releases/latest)** --
+take the `arm64-v8a` APK for almost every phone (`universal` if unsure). Each release carries
+SHA256SUMS and is signed with the Rumi Messenger certificate
+(`52ab b4d4 2345 af3b 23e4 46ff b13b c147 d467 3227 5ced 4756 7ea2 6140 d16b f770`).
+On first launch, sign in manually and type your school's server address. Your school admin creates
+your account; there is no self sign-up. Teacher guide:
+[TEACHER-GUIDE.md](https://github.com/Orenda-Project/rumi-messenger/blob/main/docs/TEACHER-GUIDE.md).
+
+## What a teacher gets
+
+| | | |
+|---|---|---|
+| <img src="docs/rumi/screenshots/02-rumi-greeting.png" width="220" alt="Rumi greets a new teacher"> | <img src="docs/rumi/screenshots/03-rumi-quiz.png" width="220" alt="A quiz from Rumi with a numbered menu"> | <img src="docs/rumi/screenshots/04-rumi-photo.png" width="220" alt="Rumi analyses a photo the teacher sent"> |
+| Rumi says hello the moment you accept the chat | Quizzes, lesson ideas and coaching; menus are numbered because Matrix has no buttons | Send a photo or a voice note and Rumi works with it |
+| <img src="docs/rumi/screenshots/05-incoming-call.png" width="220" alt="Incoming call on the locked phone"> | <img src="docs/rumi/screenshots/06-video-call.png" width="220" alt="Video call in progress"> | <img src="docs/rumi/screenshots/07-dark-mode.png" width="220" alt="Dark mode chat list"> |
+| Calls ring even when the app is closed (self-hosted push, no Google) | Voice and video, one to one and in groups, with screen share | Dark mode, Urdu interface, encrypted 1:1 and group chats |
+
+Also: notifications while the app is closed, a plain-language "backup code" for a new phone,
+colleagues found by name, reply, react, edit, delete, forward. Everything end-to-end encrypted by
+Element's own cryptography; we did not touch it.
+
+Every screenshot above was taken by an independent QA critic on a fresh install of the released
+APK, following only the public teacher guide. The full evidence trail is in the
+[decisions log](https://github.com/Orenda-Project/rumi-messenger/blob/main/docs/DECISIONS.tsv).
+
+## What we changed, and how
+
+Small, deliberate changes on Element's own extension points, so upstream merges stay cheap. See
+them all with `git log upstream/develop..rumi-brand`.
+
+| Change | Where |
+|---|---|
+| Rumi branding: hero, colours, icon, copy (English + Urdu) | `EnterpriseService` (FOSS), `onboarding_logo`, Compound tokens, `app/src/main/res/values*/rumi_strings.xml` |
+| App id `ai.hellorumi.messenger`, label "Rumi" | `app/build.gradle.kts` |
+| No analytics unless real keys are set; no consent screen | `plugins/src/main/kotlin/ModulesConfig.kt` |
+| No "Create account" (admin-created accounts), no Labs | `OnBoardingConfig.kt`, `FeatureFlags.kt` |
+| Instant sign-in against plain-http school servers | `DefaultEnterpriseService.isElementProEnforced` |
+| Sends never blocked by a teacher's own old phone | `RustMatrixClientFactory` room-key strategy |
+| Push gateway derived from the school's own ntfy endpoint | `libraries/pushproviders/unifiedpush` resolver |
+| Signed F-Droid release APKs on every `v*-rumi` tag | `.github/workflows/rumi-release.yml` |
+
+## Build and release
+
+```bash
+export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64   # JDK 21
+./gradlew :app:assembleFdroidDebug                     # debug build, ~15 min cold
+```
+
+Release: tag the commit `vX.Y.Z-rumi` on `rumi-brand` and push the tag. CI builds the F-Droid
+flavour, signs it with the `RUMI_KEYSTORE_*` repository secrets, verifies the signature, and
+publishes the APKs with SHA256SUMS. The version string becomes `<element version>-X.Y.Z-rumi`.
+
+## Known gaps
+
+No iPhone build yet (the web app works on iPhone). No search inside a single chat, no online
+status dot, single ticks instead of double: those are upstream Element X behaviours. Rumi's
+lesson-plan documents need a Gamma API key on the server. Track everything in
+[rumi-messenger issues](https://github.com/Orenda-Project/rumi-messenger/issues).
+
+## Licence and credit
+
+This fork is AGPL-3.0 like Element X itself. All the hard parts are Element's; thank you to
+[element-hq](https://github.com/element-hq). The original Element X README follows.
 
 ---
+
 
 [![Latest build](https://github.com/element-hq/element-x-android/actions/workflows/build.yml/badge.svg?query=branch%3Adevelop)](https://github.com/element-hq/element-x-android/actions/workflows/build.yml?query=branch%3Adevelop)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=element-x-android&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=element-x-android)
