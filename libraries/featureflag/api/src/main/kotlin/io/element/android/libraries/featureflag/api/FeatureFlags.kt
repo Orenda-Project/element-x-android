@@ -69,7 +69,7 @@ enum class FeatureFlags(
         description = "Renders thread messages as a dedicated timeline. Restarting the app is required for this setting to fully take effect.",
         defaultValue = { false },
         isFinished = false,
-        isInLabs = true,
+        isInLabs = false, // Rumi: no Labs screen for teachers; still in developer options
     ),
     MultiAccount(
         key = "feature.multi_account",
@@ -144,7 +144,7 @@ enum class FeatureFlags(
         description = "Allow sending multiple media items in a single message.",
         defaultValue = { false },
         isFinished = false,
-        isInLabs = true,
+        isInLabs = false, // Rumi: no Labs screen for teachers; still in developer options
     ),
     Knock(
         key = "feature.knock",
@@ -152,7 +152,7 @@ enum class FeatureFlags(
         description = "Allow creating rooms which users can request access to.",
         defaultValue = { false },
         isFinished = false,
-        isInLabs = true,
+        isInLabs = false, // Rumi: no Labs screen for teachers; still in developer options
     ),
     MessageSearch(
         key = "feature.message_search",

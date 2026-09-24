@@ -89,6 +89,16 @@
     <string name="screen_reset_encryption_confirmation_alert_action">"Yes, start fresh"</string>
     <string name="screen_reset_encryption_password_subtitle">"Confirm that you want to start fresh."</string>
 
+    <!-- Sign out wording (upstream says "Remove this device"; the teacher guide says Sign out) -->
+    <string name="action_signout">"Sign out"</string>
+    <string name="screen_signout_preference_item">"Sign out"</string>
+    <string name="screen_signout_confirmation_dialog_title">"Sign out"</string>
+    <string name="screen_signout_confirmation_dialog_submit">"Sign out"</string>
+    <string name="screen_signout_confirmation_dialog_content">"Sign out of Rumi on this phone?"</string>
+    <string name="screen_signout_in_progress_dialog_content">"Signing out…"</string>
+    <string name="screen_signout_key_backup_offline_subtitle">"Your chats were still being backed up when you went offline. Reconnect so the backup can finish before you sign out."</string>
+    <string name="screen_signout_key_backup_ongoing_subtitle">"Please wait for this to finish before you sign out."</string>
+
     <!-- Signing out of the only device (features/logout) -->
     <string name="screen_signout_save_recovery_key_title">"Have your backup code ready before you sign out"</string>
     <string name="screen_signout_save_recovery_key_subtitle">"This is your only device. After you sign out, you’ll need your backup code to open your chats next time."</string>
