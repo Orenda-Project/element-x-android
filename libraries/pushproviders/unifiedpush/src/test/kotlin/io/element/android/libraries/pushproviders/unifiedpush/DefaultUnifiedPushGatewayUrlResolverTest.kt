@@ -76,6 +76,32 @@ class DefaultUnifiedPushGatewayUrlResolverTest {
         assertThat(result).isEqualTo(FakeDefaultPushGatewayHttpUrlProvider().provide())
     }
 
+    @Test
+    fun `resolve Error on a cleartext endpoint returns the gateway derived from the endpoint`() {
+        val sut = createDefaultUnifiedPushGatewayUrlResolver(
+            unifiedPushStore = FakeUnifiedPushStore(
+                getPushGatewayResult = { FakeDefaultPushGatewayHttpUrlProvider().provide() },
+            )
+        )
+        val result = sut.resolve(
+            gatewayResult = UnifiedPushGatewayResolverResult.Error("http://192.168.100.188:2586/_matrix/push/v1/notify"),
+            instance = "instance",
+        )
+        assertThat(result).isEqualTo("http://192.168.100.188:2586/_matrix/push/v1/notify")
+    }
+
+    @Test
+    fun `resolve Error on an https endpoint still returns the default gateway`() {
+        val sut = createDefaultUnifiedPushGatewayUrlResolver(
+            unifiedPushStore = FakeUnifiedPushStore(getPushGatewayResult = { null })
+        )
+        val result = sut.resolve(
+            gatewayResult = UnifiedPushGatewayResolverResult.Error("https://ntfy.example.org/_matrix/push/v1/notify"),
+            instance = "instance",
+        )
+        assertThat(result).isEqualTo(FakeDefaultPushGatewayHttpUrlProvider().provide())
+    }
+
     private fun createDefaultUnifiedPushGatewayUrlResolver(
         unifiedPushStore: UnifiedPushStore = FakeUnifiedPushStore(),
         defaultPushGatewayHttpUrlProvider: DefaultPushGatewayHttpUrlProvider = FakeDefaultPushGatewayHttpUrlProvider(),

@@ -29,9 +29,19 @@ class DefaultUnifiedPushGatewayUrlResolver(
     ): String {
         return when (gatewayResult) {
             is UnifiedPushGatewayResolverResult.Error -> {
-                // Use previous gateway if any, or the default one
-                unifiedPushStore.getPushGateway(instance)
-                    ?: defaultPushGatewayHttpUrlProvider.provide()
+                if (gatewayResult.gateway.startsWith("http://")) {
+                    // A cleartext endpoint is a self-hosted UnifiedPush server (every public distributor is https).
+                    // Discovery usually fails here only because this app's network security policy blocks
+                    // cleartext to a raw IP (e.g. http://192.168.1.10:2586 on a school LAN). The pusher URL is
+                    // used by the homeserver, not by this device, so the phone never has to reach it. A
+                    // self-hosted server that is also a Matrix gateway (ntfy) serves it on its own origin, and
+                    // the public default gateway can never reach a LAN endpoint, so use the derived URL.
+                    gatewayResult.gateway
+                } else {
+                    // Use previous gateway if any, or the default one
+                    unifiedPushStore.getPushGateway(instance)
+                        ?: defaultPushGatewayHttpUrlProvider.provide()
+                }
             }
             UnifiedPushGatewayResolverResult.ErrorInvalidUrl,
             UnifiedPushGatewayResolverResult.NoMatrixGateway -> {
