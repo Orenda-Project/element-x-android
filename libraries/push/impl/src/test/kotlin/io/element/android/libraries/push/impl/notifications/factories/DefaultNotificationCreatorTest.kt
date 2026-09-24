@@ -19,6 +19,7 @@ import io.element.android.features.enterprise.api.EnterpriseService
 import io.element.android.features.enterprise.test.FakeEnterpriseService
 import io.element.android.libraries.core.meta.BuildMeta
 import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.matrix.api.timeline.item.event.EventType
 import io.element.android.libraries.matrix.test.AN_EVENT_ID
 import io.element.android.libraries.matrix.test.AN_EVENT_ID_2
 import io.element.android.libraries.matrix.test.A_COLOR_INT
@@ -324,6 +325,37 @@ class DefaultNotificationCreatorTest : RobolectricTest() {
             events = listOf(aNotifiableMessageEvent()),
         )
         result.commonAssertions()
+    }
+
+    @Test
+    fun `test createMessagesListNotification missed call uses the message channel, not the heads-up call channel`() = runTest {
+        val channelIdForMessage = lambdaRecorder<SessionId, Boolean, String> { _, _ -> A_CHANNEL_ID }
+        val sut = createNotificationCreator(
+            notificationChannels = FakeNotificationChannels(channelIdForMessage = channelIdForMessage),
+        )
+        val result = sut.createMessagesListNotification(
+            notificationAccountParams = aNotificationAccountParams(),
+            roomInfo = RoomEventGroupInfo(
+                sessionId = A_SESSION_ID,
+                roomId = A_ROOM_ID,
+                roomDisplayName = "roomDisplayName",
+                hasSmartReplyError = false,
+                shouldBing = true,
+                customSound = null,
+                isUpdated = false,
+            ),
+            threadId = null,
+            largeIcon = null,
+            lastMessageTimestamp = 123_456L,
+            tickerText = "tickerText",
+            existingNotification = null,
+            imageLoader = FakeImageLoader(),
+            events = listOf(aNotifiableMessageEvent(body = "Missed call from Bob", type = EventType.RTC_NOTIFICATION, noisy = true)),
+        )
+        assertThat(result.channelId).isEqualTo(A_CHANNEL_ID)
+        assertThat(result.category).isEqualTo(NotificationCompat.CATEGORY_MISSED_CALL)
+        assertThat(result.allowSystemGeneratedContextualActions).isFalse()
+        channelIdForMessage.assertions().isCalledOnce().with(value(A_SESSION_ID), value(true))
     }
 
     @Test

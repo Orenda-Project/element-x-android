@@ -16,11 +16,12 @@ import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +34,7 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.viewinterop.AndroidView
+import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.call.impl.R
 import io.element.android.features.call.impl.pip.PictureInPictureEvent
 import io.element.android.features.call.impl.pip.PictureInPictureState
@@ -99,7 +101,13 @@ internal fun CallScreenView(
         }
 
         CallWebView(
-            modifier = modifier.consumeWindowInsets(WindowInsets.systemBars).fillMaxSize(),
+            // Rumi: pad the WebView inside the system bars instead of drawing under them. Our self-hosted Element Call
+            // page does not apply safe-area insets in the Android WebView, so its header ("Teacher Hamza", the PiP
+            // arrow) sat under the status bar (rumi-messenger QA round 3, 04e). The dark canvas fills the bar areas.
+            modifier = modifier
+                .fillMaxSize()
+                .background(ElementTheme.colors.bgCanvasDefault)
+                .windowInsetsPadding(WindowInsets.systemBars),
             url = state.urlState,
             userAgent = state.userAgent,
             onPermissionsRequest = { request ->

@@ -24,6 +24,7 @@ import io.element.android.libraries.matrix.test.notification.aNotificationData
 import io.element.android.libraries.matrix.test.room.FakeBaseRoom
 import io.element.android.libraries.matrix.test.room.FakeJoinedRoom
 import io.element.android.libraries.matrix.test.room.aRoomInfo
+import io.element.android.libraries.push.impl.R
 import io.element.android.libraries.push.impl.notifications.model.NotifiableMessageEvent
 import io.element.android.libraries.push.impl.notifications.model.NotifiableRingingCallEvent
 import io.element.android.services.appnavstate.test.FakeAppForegroundStateService
@@ -120,7 +121,7 @@ class DefaultCallNotificationEventResolverTest {
     }
 
     @Test
-    fun `resolve CallNotify - RING but timed out displays the same as NOTIFY`() = runTest {
+    fun `resolve CallNotify - RING but timed out displays a missed call`() = runTest {
         val room = FakeJoinedRoom(
             baseRoom = FakeBaseRoom(
                 sessionId = A_SESSION_ID,
@@ -132,36 +133,78 @@ class DefaultCallNotificationEventResolverTest {
         val client = FakeMatrixClient().apply {
             givenGetRoomResult(A_ROOM_ID, room)
         }
-
+        val stringProvider = FakeStringProvider(defaultResult = "Missed call from ")
         val resolver = createDefaultNotifiableEventResolver(
+            stringProvider = stringProvider,
             clientProvider = FakeMatrixClientProvider(getClient = { Result.success(client) }),
         )
-        val expectedResult = NotifiableMessageEvent(
-            sessionId = A_SESSION_ID,
-            roomId = A_ROOM_ID,
-            eventId = AN_EVENT_ID,
-            senderId = A_USER_ID_2,
-            roomName = A_ROOM_NAME,
-            editedEventId = null,
-            body = "📹 Incoming call",
-            timestamp = 567L,
-            canBeReplaced = false,
-            isRedacted = false,
-            isUpdated = false,
-            senderDisambiguatedDisplayName = A_USER_NAME_2,
-            noisy = true,
-            imageUriString = null,
-            imageMimeType = null,
-            threadId = null,
-            type = "org.matrix.msc4075.rtc.notification",
-        )
+        val expectedResult = aMissedCallMessageEvent(body = "Missed call from $A_USER_NAME_2")
 
         val notificationData = aNotificationData(
             content = NotificationContent.MessageLike.RtcNotification(A_USER_ID_2, RtcNotificationType.RING, CallIntent.VIDEO, 0)
         )
         val result = resolver.resolveEvent(A_SESSION_ID, notificationData)
         assertThat(result.getOrNull()).isEqualTo(expectedResult)
+        assertThat(stringProvider.lastResIdParam).isEqualTo(R.string.rumi_notification_missed_video_call)
     }
+
+    @Test
+    fun `resolve CallNotify - RING forced after the ring stopped displays a missed audio call`() = runTest {
+        val room = FakeJoinedRoom(
+            baseRoom = FakeBaseRoom(
+                sessionId = A_SESSION_ID,
+                roomId = A_ROOM_ID,
+                // The room call can still be up (the caller keeps waiting) when our ring times out
+                initialRoomInfo = aRoomInfo(hasRoomCall = true),
+            )
+        )
+        val client = FakeMatrixClient().apply {
+            givenGetRoomResult(A_ROOM_ID, room)
+        }
+        val stringProvider = FakeStringProvider(defaultResult = "Missed call from ")
+        val resolver = createDefaultNotifiableEventResolver(
+            stringProvider = stringProvider,
+            clientProvider = FakeMatrixClientProvider(getClient = { Result.success(client) }),
+        )
+        val notificationData = aNotificationData(
+            content = NotificationContent.MessageLike.RtcNotification(A_USER_ID_2, RtcNotificationType.RING, CallIntent.AUDIO, 1567)
+        )
+        val result = resolver.resolveEvent(A_SESSION_ID, notificationData, forceNotify = true)
+        assertThat(result.getOrNull()).isEqualTo(aMissedCallMessageEvent(body = "Missed call from $A_USER_NAME_2"))
+        assertThat(stringProvider.lastResIdParam).isEqualTo(R.string.rumi_notification_missed_audio_call)
+    }
+
+    @Test
+    fun `resolve CallNotify - NOTIFY keeps the incoming call text`() = runTest {
+        val stringProvider = FakeStringProvider(defaultResult = "📞 Incoming call")
+        val resolver = createDefaultNotifiableEventResolver(stringProvider = stringProvider)
+        val notificationData = aNotificationData(
+            content = NotificationContent.MessageLike.RtcNotification(A_USER_ID_2, RtcNotificationType.NOTIFY, CallIntent.AUDIO, 0)
+        )
+        val result = resolver.resolveEvent(A_SESSION_ID, notificationData, forceNotify = true)
+        assertThat((result.getOrNull() as NotifiableMessageEvent).body).isEqualTo("📞 Incoming call")
+        assertThat(stringProvider.lastResIdParam).isEqualTo(R.string.notification_incoming_audio_call)
+    }
+
+    private fun aMissedCallMessageEvent(body: String) = NotifiableMessageEvent(
+        sessionId = A_SESSION_ID,
+        roomId = A_ROOM_ID,
+        eventId = AN_EVENT_ID,
+        senderId = A_USER_ID_2,
+        roomName = A_ROOM_NAME,
+        editedEventId = null,
+        body = body,
+        timestamp = 567L,
+        canBeReplaced = false,
+        isRedacted = false,
+        isUpdated = false,
+        senderDisambiguatedDisplayName = A_USER_NAME_2,
+        noisy = true,
+        imageUriString = null,
+        imageMimeType = null,
+        threadId = null,
+        type = "org.matrix.msc4075.rtc.notification",
+    )
 
     private fun createDefaultNotifiableEventResolver(
         stringProvider: FakeStringProvider = FakeStringProvider(defaultResult = "\uD83D\uDCF9 Incoming call"),

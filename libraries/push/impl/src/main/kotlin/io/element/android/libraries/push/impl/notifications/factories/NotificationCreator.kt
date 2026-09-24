@@ -149,14 +149,12 @@ class DefaultNotificationCreator(
             )
         }
         val containsMissedCall = events.any { it.type == EventType.RTC_NOTIFICATION }
-        val channelId = if (containsMissedCall) {
-            notificationChannels.getChannelForIncomingCall(false)
-        } else {
-            notificationChannels.getChannelIdForMessage(
-                sessionId = roomInfo.sessionId,
-                noisy = roomInfo.shouldBing,
-            )
-        }
+        // Rumi: a missed call goes on the normal message channel (IMPORTANCE_DEFAULT: sound, no heads-up) rather than
+        // upstream's IMPORTANCE_HIGH call channel, which popped a second heads-up right after the ring stopped.
+        val channelId = notificationChannels.getChannelIdForMessage(
+            sessionId = roomInfo.sessionId,
+            noisy = roomInfo.shouldBing,
+        )
         // A category allows groups of notifications to be ranked and filtered – per user or system settings.
         // For example, alarm notifications should display before promo notifications, or message from known contact
         // that can be displayed in not disturb mode if white listed (the later will need compat28.x)
@@ -228,6 +226,8 @@ class DefaultNotificationCreator(
                 }
             }
             .setTicker(tickerText)
+            // Rumi: no system smart replies ("Okay") on a missed call.
+            .setAllowSystemGeneratedContextualActions(!containsMissedCall)
             .build()
     }
 

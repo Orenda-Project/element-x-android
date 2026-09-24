@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rumi-only strings for libraries/push (kept out of localazy.xml so upstream string syncs stay conflict-free). -->
+<resources>
+    <!-- %1$s = caller display name. Shown after a ring ends unanswered (CallNotificationEventResolver). -->
+    <string name="rumi_notification_missed_audio_call">"📞 Missed call from %1$s"</string>
+    <string name="rumi_notification_missed_video_call">"📹 Missed video call from %1$s"</string>
+</resources>

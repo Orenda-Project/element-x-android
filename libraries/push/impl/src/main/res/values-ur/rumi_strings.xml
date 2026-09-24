@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="rumi_notification_missed_audio_call">"📞 %1$s کی مس کال"</string>
+    <string name="rumi_notification_missed_video_call">"📹 %1$s کی مس ویڈیو کال"</string>
+</resources>

@@ -5,7 +5,7 @@
   upstream syncs conflict-free). Only strings that leak Element/Matrix branding or crypto vocabulary
   to teachers go here.
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Login password screen subtitle; upstream says "Matrix is an open network ..." -->
     <string name="screen_login_subtitle">"A private messenger for your school team."</string>
     <!-- Notification settings, default message sound label; upstream says "Element Default" -->
@@ -105,9 +105,16 @@
     <string name="screen_signout_recovery_disabled_subtitle">"This is your only device. After you sign out, you’ll need your backup code to open your chats next time."</string>
     <string name="screen_signout_key_backup_disabled_subtitle">"This is your only device. After you sign out, you’ll need your backup code to open your chats next time."</string>
 
-    <!-- A colleague reinstalled or got a new phone (libraries/ui-strings) -->
-    <string name="crypto_identity_change_profile_pin_violation">"%1$s signed in again on a new phone or reinstalled the app."</string>
-    <string name="crypto_identity_change_pin_violation">"%1$s signed in again on a new phone or reinstalled the app. %2$s"</string>
-    <string name="crypto_identity_change_pin_violation_new">"%1$s (%2$s) signed in again on a new phone or reinstalled the app. %3$s"</string>
-    <string name="crypto_identity_change_verification_violation_new">"%1$s (%2$s) signed in again on a new phone or reinstalled the app. %3$s"</string>
+    <!-- A colleague signed in on a new device, browser, or reinstalled (libraries/ui-strings).
+         Upstream shape: pin_violation_new / verification_violation_new take
+         (%1$s display name, %2$s the formatted crypto_identity_change_pin_violation_new_user_id "(%1$s)",
+         %3$s "Learn more"). QA round 3 (02b/03f) saw "Hamza ((@+92…:localhost))": the override
+         wrapped %2$s in a second pair of brackets and showed the raw Matrix ID. The user-id
+         fragment is overridden to empty below (IdentityChangeStateView bolds it via indexOf, and
+         indexOf("") = 0 is a harmless empty span), so %2$s is dropped from these strings. -->
+    <string name="crypto_identity_change_pin_violation_new_user_id">""</string>
+    <string name="crypto_identity_change_profile_pin_violation">"%1$s signed in on a new device."</string>
+    <string name="crypto_identity_change_pin_violation">"%1$s signed in on a new device. %2$s"</string>
+    <string name="crypto_identity_change_pin_violation_new" formatted="true" tools:ignore="StringFormatCount">"%1$s signed in on a new device. %3$s"</string>
+    <string name="crypto_identity_change_verification_violation_new" formatted="true" tools:ignore="StringFormatCount">"%1$s signed in on a new device. %3$s"</string>
 </resources>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Urdu counterpart of values/rumi_strings.xml; upstream values-ur also mentions Matrix. -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="screen_login_subtitle">"آپ کی اسکول ٹیم کے لیے ایک نجی میسنجر۔"</string>
     <string name="screen_notification_settings_sound_element_default">"رومی ڈیفالٹ"</string>
 
@@ -17,4 +17,9 @@
     <string name="banner_set_up_recovery_submit">"بیک اپ کوڈ لیں"</string>
     <string name="screen_encryption_reset_title">"تصدیق نہیں ہو رہی؟ آپ نئے سرے سے شروع کر سکتے ہیں۔"</string>
     <string name="screen_encryption_reset_action_continue_reset">"نئے سرے سے شروع کریں"</string>
+    <!-- Identity-change banner (see values/rumi_strings.xml for the %2$s note). -->
+    <string name="crypto_identity_change_profile_pin_violation">"%1$s نے نئی ڈیوائس پر سائن ان کیا ہے۔"</string>
+    <string name="crypto_identity_change_pin_violation">"%1$s نے نئی ڈیوائس پر سائن ان کیا ہے۔ %2$s"</string>
+    <string name="crypto_identity_change_pin_violation_new" formatted="true" tools:ignore="StringFormatCount">"%1$s نے نئی ڈیوائس پر سائن ان کیا ہے۔ %3$s"</string>
+    <string name="crypto_identity_change_verification_violation_new" formatted="true" tools:ignore="StringFormatCount">"%1$s نے نئی ڈیوائس پر سائن ان کیا ہے۔ %3$s"</string>
 </resources>

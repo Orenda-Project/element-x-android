@@ -129,7 +129,19 @@ class DefaultCallNotificationEventResolver(
                     noisy = true,
                     timestamp = this.timestamp,
                     senderDisambiguatedDisplayName = getDisambiguatedDisplayName(content.senderId),
-                    body = if (content.callIntent == CallIntent.VIDEO) {
+                    body = if (content.type == RtcNotificationType.RING) {
+                        // Rumi: a RING that is not ringing here any more (the ring timed out, the caller hung up
+                        // before anyone answered, or we were busy on another call) is a missed call. Upstream
+                        // still said "Incoming call" after the fact (rumi-messenger QA round 3, 05d).
+                        // Answered calls never reach this branch: DefaultActiveCallManager skips the missed-call
+                        // notification when the user joined, and NOTIFY (group "call started") keeps upstream's text.
+                        val senderName = getDisambiguatedDisplayName(content.senderId)
+                        if (content.callIntent == CallIntent.VIDEO) {
+                            stringProvider.getString(R.string.rumi_notification_missed_video_call, senderName)
+                        } else {
+                            stringProvider.getString(R.string.rumi_notification_missed_audio_call, senderName)
+                        }
+                    } else if (content.callIntent == CallIntent.VIDEO) {
                         stringProvider.getString(R.string.notification_incoming_call)
                     } else {
                         stringProvider.getString(R.string.notification_incoming_audio_call)
